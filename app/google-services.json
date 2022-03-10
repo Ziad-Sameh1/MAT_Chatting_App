@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "631544748881",
+    "project_id": "mat-chatting-app",
+    "storage_bucket": "mat-chatting-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631544748881:android:65be07ac68db5470941170",
+        "android_client_info": {
+          "package_name": "com.example.matchatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "631544748881-4ndfvqpf26nt0h1dlotn9ed9rc96aphd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBA7yQGiX-BJP5Jm-88gW9XxLWJAWAssig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "631544748881-4ndfvqpf26nt0h1dlotn9ed9rc96aphd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
