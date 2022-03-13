@@ -60,7 +60,7 @@ fun UserItemComposable(
                      * */
                     viewModel.checkIfChatRoomCreatedBefore(
                         LoggedInUserData.loggedInUserId,
-                        user.userId
+                        user
                     )
                 }
         ) {
@@ -132,9 +132,9 @@ fun UserItemComposable(
         // save the new chat room id
         viewModel.saveChatRoomId(chatRoomId = viewModel.currentChatRoom.value)
         navController.navigate(
-            Screen.ChattingRoomScreen.route + "?userId=${user.userId}&userName=${user.userName}&userPicUri=${
+            Screen.ChattingRoomScreen.route + "?userId=${viewModel.clickedUser.value.userId}&userName=${viewModel.clickedUser.value.userName}&userPicUri=${
                 URLEncoder.encode(
-                    user.userProfilePic,
+                    viewModel.clickedUser.value.userProfilePic ?: "",
                     StandardCharsets.UTF_8.toString()
                 )
             }&chatRoomId=${viewModel.currentChatRoom.value}"
@@ -145,28 +145,26 @@ fun UserItemComposable(
         viewModel.onDoNavigateStateChanges(newValue = false)
     }
     if (viewModel.isDoneChecking.value) {
-        Log.i(TAG, "UserItemComposable: yyyyyyyyyyyyyyyyyyy")
         if (viewModel.currentChatRoom.value.isEmpty()) {
-            Log.i(TAG, "UserItemComposable: xxxxxxxxxxxxxxxxxxxx")
             // then create chat room
             viewModel.createChatRoom(
                 chatRoom = ChatRoom(
-                    chatRoomId = LoggedInUserData.loggedInUserId + "_" + user.userId,
+                    chatRoomId = LoggedInUserData.loggedInUserId + "_" + viewModel.clickedUser.value.userId,
                     userId = listOf(
                         LoggedInUserData.loggedInUserId,
-                        user.userId
+                        viewModel.clickedUser.value.userId
                     ),
                     userName = listOf(
                         LoggedInUserData.loggedInUserName,
-                        user.userName!!
+                        viewModel.clickedUser.value.userName ?: ""
                     ),
                     userProfilePic = listOf(
                         LoggedInUserData.loggedInUserprofilePicUri,
-                        user.userProfilePic ?: ""
+                        viewModel.clickedUser.value.userProfilePic ?: ""
                     ),
                     numberOfUnreadMessages = hashMapOf(
                         LoggedInUserData.loggedInUserId to 0,
-                        user.userId to 0
+                        viewModel.clickedUser.value.userId to 0
                     ),
                     numberOfParticipants = 2
                 )

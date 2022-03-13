@@ -2,7 +2,6 @@ package com.example.matchatapp.feature_chatting.presentation.chat_list.component
 
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,14 +29,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
-import com.example.matchatapp.LoggedInUserData
 import com.example.matchatapp.R
 import com.example.matchatapp.Screen
 import com.example.matchatapp.feature_chatting.domain.model.ChatRoom
+import com.example.matchatapp.feature_chatting.domain.model.User
 import com.example.matchatapp.feature_chatting.presentation.chat_list.ChatListViewModel
 import com.example.matchatapp.ui.theme.Gray
 import com.example.matchatapp.ui.theme.darkMode
-import com.example.matchatapp.utils.Constants.TAG
 import com.example.matchatapp.utils.convertDate
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -63,7 +61,14 @@ fun ChatItem(chatRoom: ChatRoom, viewModel: ChatListViewModel, navController: Na
                     // first check
                     viewModel.checkIfChatRoomCreatedBefore(
                         chatRoom.userId[0],
-                        chatRoom.userId[1]
+                        User(
+                            userId = chatRoom.userId[viewModel.getAnotherUserIndex(chatRoom = chatRoom)],
+                            userName = chatRoom.userName[viewModel.getAnotherUserIndex(chatRoom = chatRoom)],
+                            userPhone = chatRoom.userId[viewModel.getAnotherUserIndex(chatRoom = chatRoom)],
+                            userProfilePic = chatRoom.userProfilePic[viewModel.getAnotherUserIndex(
+                                chatRoom = chatRoom
+                            )]
+                        )
                     )
                 }
         ) {
@@ -228,25 +233,14 @@ fun ChatItem(chatRoom: ChatRoom, viewModel: ChatListViewModel, navController: Na
         if (viewModel.isDoneChecking.value) {
             // save the new chat room id
             viewModel.saveChatRoomId(viewModel.currentChatRoom.value)
-            Log.i(TAG, "ChatItem: Current -> ${LoggedInUserData.loggedInUserId}")
-            Log.i(
-                TAG,
-                "ChatItem: Clicked -> ${chatRoom.userId[viewModel.getAnotherUserIndex(chatRoom = chatRoom)]}"
-            )
             navController.navigate(
                 Screen.ChattingRoomScreen.route + "?userId=${
-                    chatRoom.userId[viewModel.getAnotherUserIndex(
-                        chatRoom = chatRoom
-                    )]
+                    viewModel.clickedUser.value.userId
                 }&userName=${
-                    chatRoom.userName[viewModel.getAnotherUserIndex(
-                        chatRoom = chatRoom
-                    )]
+                    viewModel.clickedUser.value.userName
                 }&userPicUri=${
                     URLEncoder.encode(
-                        chatRoom.userProfilePic[viewModel.getAnotherUserIndex(
-                            chatRoom = chatRoom
-                        )],
+                        viewModel.clickedUser.value.userProfilePic ?: "",
                         StandardCharsets.UTF_8.toString()
                     )
                 }&chatRoomId=${viewModel.currentChatRoom.value}"

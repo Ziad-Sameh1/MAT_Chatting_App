@@ -32,7 +32,10 @@ class AddGroupViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    var deviceContacts: List<Contact> = emptyList()
+    private var deviceContacts: List<Contact> = emptyList()
+
+    private val _clickedUser = mutableStateOf<User>(User(userId = "", userPhone = ""))
+    val clickedUser: State<User> = _clickedUser
 
     private val _matUsers = mutableStateListOf<User>()
     val matUsers: SnapshotStateList<User> = _matUsers
@@ -132,12 +135,13 @@ class AddGroupViewModel @Inject constructor(
 
     fun checkIfChatRoomCreatedBefore(
         firstUserPhoneNumber: String,
-        secondUserPhoneNumber: String
+        secondUser: User
     ) {
+        _clickedUser.value = secondUser
         _currentChatRoom.value = ""
         checkIfChatRoomIsCreatedBeforeUseCase(
             firstUserPhoneNumber = firstUserPhoneNumber,
-            secondUserPhoneNumber = secondUserPhoneNumber,
+            secondUserPhoneNumber = secondUser.userPhone,
             checkIfChatRoomCreatedBeforeResultListener = object :
                 CheckIfChatRoomCreatedBeforeResultListener {
                 override fun onSuccess(chatRoomId: String) {

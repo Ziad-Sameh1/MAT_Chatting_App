@@ -10,6 +10,7 @@ import com.example.matchatapp.LoggedInUserData
 import com.example.matchatapp.feature_chatting.data.interfaces.CheckIfChatRoomCreatedBeforeResultListener
 import com.example.matchatapp.feature_chatting.domain.model.ChatRoom
 import com.example.matchatapp.feature_chatting.domain.model.Response
+import com.example.matchatapp.feature_chatting.domain.model.User
 import com.example.matchatapp.feature_chatting.domain.use_case.CheckIfChatRoomIsCreatedBeforeUseCase
 import com.example.matchatapp.feature_chatting.domain.use_case.GetUserChatRoomsUseCase
 import com.example.matchatapp.utils.Constants.TAG
@@ -32,6 +33,8 @@ class ChatListViewModel @Inject constructor(
             getChatRooms()
         }
     }
+    private val _clickedUser = mutableStateOf<User>(User(userId = "", userPhone = ""))
+    val clickedUser: State<User> = _clickedUser
 
     private val _isLoadingState = mutableStateOf<Boolean>(true)
     val isLoadingState: State<Boolean> = _isLoadingState
@@ -60,7 +63,6 @@ class ChatListViewModel @Inject constructor(
     }
 
     fun getAnotherUserIndex(chatRoom: ChatRoom): Int {
-        Log.i(TAG, "getAnotherUserIndex: ${chatRoom.userId}")
         return if (chatRoom.userId[0] == LoggedInUserData.loggedInUserId) {
             1
         } else {
@@ -69,7 +71,6 @@ class ChatListViewModel @Inject constructor(
     }
 
     private fun getChatRooms() {
-        Log.i(TAG, "getChatRooms: ${LoggedInUserData.loggedInUserPhoneNumber}")
         getUserChatRoomsUseCase(LoggedInUserData.loggedInUserPhoneNumber).onEach { chatRoom ->
             when (chatRoom) {
                 is Response.Success -> {
@@ -91,12 +92,13 @@ class ChatListViewModel @Inject constructor(
 
     fun checkIfChatRoomCreatedBefore(
         firstUserPhoneNumber: String,
-        secondUserPhoneNumber: String
+        secondUser: User
     ) {
+        _clickedUser.value = secondUser
         _currentChatRoom.value = ""
         checkIfChatRoomIsCreatedBeforeUseCase(
             firstUserPhoneNumber = firstUserPhoneNumber,
-            secondUserPhoneNumber = secondUserPhoneNumber,
+            secondUserPhoneNumber = secondUser.userPhone,
             checkIfChatRoomCreatedBeforeResultListener = object :
                 CheckIfChatRoomCreatedBeforeResultListener {
                 override fun onSuccess(chatRoomId: String) {
