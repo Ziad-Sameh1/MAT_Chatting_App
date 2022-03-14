@@ -13,6 +13,10 @@ Technologies used:
 - Firebase Cloud Storage 
 - Kotlin Programming Language
 
+To download and test the app:
+---
+- Download from here -> https://bit.ly/36fut8W
+
 Some Screenshots From the app:
 ---
 <img src="https://user-images.githubusercontent.com/89319936/157721775-adbac55b-562e-4a9c-95d7-6d853e016f3b.png" width="200" />
