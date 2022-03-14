@@ -46,8 +46,6 @@ fun ProfileScreen(
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
             // Update Local Image Uri
             viewModel.onLocalProfileImageUriChanges(it)
-            Log.i(TAG, "ProfileScreen: localImageUri -> ${viewModel.localProfileImageUri.value}")
-            // TODO: Upload the new Pic to the Cloud & return with the uri to save it to the Firestore
             viewModel.onIsProfilePicLoadingStateChanges(newValue = true)
             viewModel.getCloudProfileImageUri(it)
             // show image loading bar

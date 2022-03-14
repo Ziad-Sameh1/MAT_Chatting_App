@@ -32,7 +32,7 @@ import com.google.accompanist.permissions.shouldShowRationale
 @Composable
 fun AddGroupScreen(
     navController: NavController,
-    viewModel: AddGroupViewModel
+    viewModel: AddGroupViewModel, chattingRoomViewModel: ChattingRoomViewModel
 ) {
     val contactsPermissionState =
         rememberPermissionState(permission = Manifest.permission.READ_CONTACTS)
@@ -71,7 +71,7 @@ fun AddGroupScreen(
                     // TODO: Display List of Contacts
                     UsersListComposable(
                         viewModel = viewModel,
-                        navController = navController
+                        navController = navController, chattingRoomViewModel = chattingRoomViewModel
                     )
                 }
                 viewModel.onIsLoadingStateChanges(false)

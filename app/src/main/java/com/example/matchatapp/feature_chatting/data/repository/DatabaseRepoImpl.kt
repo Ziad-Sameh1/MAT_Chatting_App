@@ -164,12 +164,10 @@ class DatabaseRepoImpl @Inject constructor(
         secondUserPhoneNumber: String,
         checkIfChatRoomCreatedBeforeResultListener: CheckIfChatRoomCreatedBeforeResultListener
     ) {
-        Log.i(TAG, "checkIfChatRoomAvailable: checking...")
         val firstCase = firstUserPhoneNumber + "_" + secondUserPhoneNumber
         val secondCase = secondUserPhoneNumber + "_" + firstUserPhoneNumber
         mainCollectionReference.whereIn("chatRoomId", listOf(firstCase, secondCase)).get()
             .addOnSuccessListener { documents ->
-                Log.i(TAG, "checkIfChatRoomAvailable: ${documents.documents}")
                 if (documents.documents.isEmpty()) {
                     checkIfChatRoomCreatedBeforeResultListener.onNotFound()
                 } else {

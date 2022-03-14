@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -30,6 +31,7 @@ import com.example.matchatapp.Screen
 import com.example.matchatapp.feature_chatting.domain.model.ChatRoom
 import com.example.matchatapp.feature_chatting.domain.model.User
 import com.example.matchatapp.feature_chatting.presentation.add_group_screen.AddGroupViewModel
+import com.example.matchatapp.feature_chatting.presentation.chatting_room.ChattingRoomViewModel
 import com.example.matchatapp.ui.theme.darkMode
 import com.example.matchatapp.utils.Constants.TAG
 import java.net.URLEncoder
@@ -39,7 +41,8 @@ import java.nio.charset.StandardCharsets
 fun UserItemComposable(
     user: User,
     navController: NavController,
-    viewModel: AddGroupViewModel
+    viewModel: AddGroupViewModel,
+    chattingRoomViewModel: ChattingRoomViewModel
 ) {
     Surface(
         elevation = 5.dp,
@@ -54,10 +57,10 @@ fun UserItemComposable(
                 .background(if (isSystemInDarkTheme()) darkMode else Color.White)
                 .clickable {
 
-                    // TODO: Open chat room
                     /**
                      * First Check if the chat room is created before if so return the id else create a new one
                      * */
+                    viewModel.onIsLoadingStateChanges(true)
                     viewModel.checkIfChatRoomCreatedBefore(
                         LoggedInUserData.loggedInUserId,
                         user
@@ -129,6 +132,9 @@ fun UserItemComposable(
         }
     }
     if (viewModel.doNavigate.value) {
+        chattingRoomViewModel.readMessagesFromDatabase(chatRoomId = viewModel.currentChatRoom.value)
+        chattingRoomViewModel.onChattingRoomIdStateChanges(newValue = viewModel.currentChatRoom.value)
+        viewModel.onIsLoadingStateChanges(false)
         // save the new chat room id
         viewModel.saveChatRoomId(chatRoomId = viewModel.currentChatRoom.value)
         navController.navigate(
@@ -170,10 +176,20 @@ fun UserItemComposable(
                 )
             )
             viewModel.onIsDoneCheckingStateChanges(false)
+            chattingRoomViewModel.onReadingMessageStateDone(false)
         } else {
             // then the chat room is found and its id is stored in viewModel.currentChatRoom
             viewModel.onDoNavigateStateChanges(true)
             viewModel.onIsDoneCheckingStateChanges(false)
+            chattingRoomViewModel.onReadingMessageStateDone(false)
+        }
+    }
+    if (viewModel.isLoadingState.value) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
     }
 }

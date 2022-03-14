@@ -22,7 +22,6 @@ class ContactsRepoImpl @Inject constructor(
             null,
             null
         )
-        Log.i(TAG, "getContacts: cursor size: ${cursor?.count}")
         if (cursor?.count ?: 0 > 0) {
             while (cursor?.moveToNext() == true) {
                 val name =
@@ -34,7 +33,6 @@ class ContactsRepoImpl @Inject constructor(
             }
         }
         cursor?.close()
-        Log.i(TAG, "getContacts: $list")
         return list
     }
 }

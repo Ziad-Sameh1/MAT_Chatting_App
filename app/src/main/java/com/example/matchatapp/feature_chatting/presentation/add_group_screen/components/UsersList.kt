@@ -10,14 +10,14 @@ import com.example.matchatapp.feature_chatting.presentation.chatting_room.Chatti
 @Composable
 fun UsersListComposable(
     viewModel: AddGroupViewModel,
-    navController: NavController
+    navController: NavController, chattingRoomViewModel: ChattingRoomViewModel
 ) {
     LazyColumn {
         items(viewModel.matUsers) { user ->
             UserItemComposable(
                 user = user,
                 navController = navController,
-                viewModel = viewModel
+                viewModel = viewModel, chattingRoomViewModel = chattingRoomViewModel
             )
         }
     }

@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.matchatapp.CurrentOpenedChatRoomId
 import com.example.matchatapp.LoggedInUserData
 import com.example.matchatapp.feature_chatting.data.interfaces.AddMessageToChatRoomResultListener
-import com.example.matchatapp.feature_chatting.domain.model.ChatRoom
 import com.example.matchatapp.feature_chatting.domain.model.Message
 import com.example.matchatapp.feature_chatting.domain.model.Response
 import com.example.matchatapp.feature_chatting.domain.use_case.AddMessageToChatRoomUseCase
@@ -44,10 +43,20 @@ class ChattingRoomViewModel @Inject constructor(
     private val _chattingRoomId = mutableStateOf<String>("")
     val chattingRoomId: State<String> = _chattingRoomId
 
+    private val _isReadingMessagesStateDone = mutableStateOf<Boolean>(false)
+    val isReadingMessagesStateDone: State<Boolean> = _isReadingMessagesStateDone
+
     init {
         _firstUserPhone.value = LoggedInUserData.loggedInUserId
         _chattingRoomId.value = CurrentOpenedChatRoomId.id
-        readMessagesFromDatabase(chatRoomId = chattingRoomId.value)
+    }
+
+    fun onChattingRoomIdStateChanges(newValue: String) {
+        _chattingRoomId.value = newValue
+    }
+
+    fun onReadingMessageStateDone(newValue: Boolean) {
+        _isReadingMessagesStateDone.value = newValue
     }
 
     fun onEnteredMessageStateChanges(newValue: String) {
@@ -75,7 +84,8 @@ class ChattingRoomViewModel @Inject constructor(
         updateLastMessageUseCase(message = message, chatRoomId = chatRoomId)
     }
 
-    private fun readMessagesFromDatabase(chatRoomId: String) {
+    fun readMessagesFromDatabase(chatRoomId: String) {
+        _isReadingMessagesStateDone.value = false
         readChatRoomMessagesUseCase(
             chatRoomId = chatRoomId
         ).onEach { messageList ->
@@ -87,6 +97,7 @@ class ChattingRoomViewModel @Inject constructor(
                             _messages.add(messageList.data[i])
                         }
                     }
+                    _isReadingMessagesStateDone.value = true
                 }
                 is Response.Error -> {
                     Log.i(TAG, "readMessagesFromDatabase: Error")
@@ -96,13 +107,5 @@ class ChattingRoomViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    fun getAnotherUserIndex(chatRoom: ChatRoom): Int {
-        return if (chatRoom.userId[0] == LoggedInUserData.loggedInUserId) {
-            1
-        } else {
-            0
-        }
     }
 }

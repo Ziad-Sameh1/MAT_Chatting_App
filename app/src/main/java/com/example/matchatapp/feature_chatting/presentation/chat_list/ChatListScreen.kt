@@ -1,6 +1,7 @@
 package com.example.matchatapp.feature_chatting.presentation.chat_list
 
-import android.util.Log
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -21,18 +22,19 @@ import com.example.matchatapp.R
 import com.example.matchatapp.Screen
 import com.example.matchatapp.feature_chatting.presentation.chat_list.components.ChatList
 import com.example.matchatapp.feature_chatting.presentation.chat_list.components.NoChatsFound
+import com.example.matchatapp.feature_chatting.presentation.chatting_room.ChattingRoomViewModel
 import com.example.matchatapp.feature_chatting.presentation.common.CommonErrorScreen
 import com.example.matchatapp.ui.theme.CardGray
-import com.example.matchatapp.utils.Constants
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.SystemUiController
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ChatListScreen(
     viewModel: ChatListViewModel,
     systemUiController: SystemUiController,
-    navController: NavController
+    navController: NavController, chattingRoomViewModel: ChattingRoomViewModel
 ) {
     if (isSystemInDarkTheme(
         )
@@ -140,7 +142,7 @@ fun ChatListScreen(
                     ChatList(
                         chatRooms = viewModel.chatRooms.value,
                         viewModel = viewModel,
-                        navController = navController
+                        navController = navController, chattingRoomViewModel = chattingRoomViewModel
                     )
                 }
             }

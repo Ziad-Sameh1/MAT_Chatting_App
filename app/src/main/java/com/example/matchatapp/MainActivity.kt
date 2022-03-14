@@ -309,13 +309,15 @@ class MainActivity : ComponentActivity() {
                             ChatListScreen(
                                 systemUiController = systemUiController,
                                 viewModel = chatListViewModel,
-                                navController = navController
+                                navController = navController,
+                                chattingRoomViewModel = chattingRoomViewModel
                             )
                         }
                         composable(Screen.AddGroupScreen.route) {
                             AddGroupScreen(
                                 navController = navController,
-                                viewModel = addGroupViewModel
+                                viewModel = addGroupViewModel,
+                                chattingRoomViewModel = chattingRoomViewModel
                             )
                         }
                         composable(Screen.ProfileScreen.route) {

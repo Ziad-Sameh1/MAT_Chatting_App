@@ -34,6 +34,7 @@ import com.example.matchatapp.Screen
 import com.example.matchatapp.feature_chatting.domain.model.ChatRoom
 import com.example.matchatapp.feature_chatting.domain.model.User
 import com.example.matchatapp.feature_chatting.presentation.chat_list.ChatListViewModel
+import com.example.matchatapp.feature_chatting.presentation.chatting_room.ChattingRoomViewModel
 import com.example.matchatapp.ui.theme.Gray
 import com.example.matchatapp.ui.theme.darkMode
 import com.example.matchatapp.utils.convertDate
@@ -42,7 +43,12 @@ import java.nio.charset.StandardCharsets
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ChatItem(chatRoom: ChatRoom, viewModel: ChatListViewModel, navController: NavController) {
+fun ChatItem(
+    chatRoom: ChatRoom,
+    viewModel: ChatListViewModel,
+    navController: NavController,
+    chattingRoomViewModel: ChattingRoomViewModel
+) {
     Surface(
         elevation = 5.dp,
         shape = RoundedCornerShape(15.dp),
@@ -60,7 +66,7 @@ fun ChatItem(chatRoom: ChatRoom, viewModel: ChatListViewModel, navController: Na
                      * */
                     // first check
                     viewModel.checkIfChatRoomCreatedBefore(
-                        chatRoom.userId[0],
+                        chatRoom.userId[if (viewModel.getAnotherUserIndex(chatRoom = chatRoom) == 1) 0 else 1],
                         User(
                             userId = chatRoom.userId[viewModel.getAnotherUserIndex(chatRoom = chatRoom)],
                             userName = chatRoom.userName[viewModel.getAnotherUserIndex(chatRoom = chatRoom)],
@@ -231,6 +237,8 @@ fun ChatItem(chatRoom: ChatRoom, viewModel: ChatListViewModel, navController: Na
             }
         }
         if (viewModel.isDoneChecking.value) {
+            chattingRoomViewModel.readMessagesFromDatabase(viewModel.currentChatRoom.value)
+            chattingRoomViewModel.onChattingRoomIdStateChanges(newValue = viewModel.currentChatRoom.value)
             // save the new chat room id
             viewModel.saveChatRoomId(viewModel.currentChatRoom.value)
             navController.navigate(
